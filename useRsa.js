@@ -1,0 +1,39 @@
+import { pki, util } from 'node-forge';
+import axios from 'axios';
+import { Buffer } from 'buffer';
+
+const publicKey = pki.publicKeyFromPem(
+	`-----BEGIN PUBLIC KEY-----MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAqmWHNK+nlSkpRPNwhpCxVVqxlLJxn25kVNlhFXlSC0RTKHpCmr0r1iSMiVsPbg5a+pmAdJPsFvdvESzl439a1FLatMXcjAy/Hlk8ZgHieJhKEmCbq3x0iGMAeI7re4JNtC4jL7cy97YanDSYzyfeqVHgUbplG61yj6DO9bxsSApv7oBi0BrCs+Yed3S3BOHDQejwavwQq0eXOF/T7WUpcvaaPciis4WUJ6aU0leLfdzkOYs310ieY56AcJk7MTmdCX3xmTQwKSLrcWuZ+og9SzCBbUuyE4BNwixwrywZHCuvawEabX6bGcoTsl1k9s4f2UywUEDu03nht3C1s4IqdiFtN/eDakgtK6dI30kaJWR2kfQhXIdM9jS16rocwf4B9FsWmYYBaNKSbwq1UccbvfAgJfNKpdO7fbAkwnQlKaXvZoglpZSumTh5DgS8UNal2egd52q3DcJ3PO0nAOOUUT8qlz4qPSuekkRBfcWikLVP0RQBs1glatApPEpe9yaD6tiJMT1GDNtmfP99z9qwuMdaikExObKZc/zh5cuYzUidEURijtGNlAX+Aw+HST5ISUN29c4zzG9G1Gxdf7DUA/mmROtHW+MmiDKRvsMvSLCRyc0q1j2otaY7QEonKL2oS58fOFwkxpzXMPl5FKPjFIxymoKw13kTn1zE6Ne5qh0CAwEAAQ==-----END PUBLIC KEY-----`
+);
+const privateKey = pki.privateKeyFromPem(
+	`-----BEGIN RSA PRIVATE KEY-----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-----END RSA PRIVATE KEY-----`
+);
+
+const useRsa = () => {
+	const test = () => {
+		axios.get('https://random-word-api.herokuapp.com/word').then((res) => {
+			// ENCRYPT String
+			let toEncrypt = Buffer.from(res.data[0]);
+			let encrypted = util.encode64(
+				publicKey.encrypt(toEncrypt, 'RSA-OAEP')
+			);
+			console.log(encrypted);
+
+			const start = new Date();
+
+			// DECRYPT String
+			let decrypted = privateKey.decrypt(
+				util.decode64(encrypted),
+				'RSA-OAEP'
+			);
+
+			const end = new Date();
+			console.log(`Decryption time: ${end - start}`);
+			console.log(decrypted);
+		});
+	};
+
+	return { test };
+};
+
+export default useRsa;

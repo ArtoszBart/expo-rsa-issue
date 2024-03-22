@@ -1,20 +1,34 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import { useEffect } from 'react';
+import useRsa from './useRsa';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+	const { test } = useRsa();
+
+	// useEffect(() => {
+	// 	const unsubscribe = test();
+	// 	return unsubscribe;
+	// }, []);
+
+	return (
+		<View style={styles.container}>
+			<Button
+				title='Test'
+				onPress={() => {
+					test();
+				}}
+			/>
+			<StatusBar style='auto' />
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+	container: {
+		flex: 1,
+		backgroundColor: '#fff',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 });
