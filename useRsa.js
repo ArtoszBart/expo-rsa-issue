@@ -1,6 +1,7 @@
 import { pki, util } from 'node-forge';
 import axios from 'axios';
 import { Buffer } from 'buffer';
+import { useState } from 'react';
 
 const publicKey = pki.publicKeyFromPem(
 	`-----BEGIN PUBLIC KEY-----MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAqmWHNK+nlSkpRPNwhpCxVVqxlLJxn25kVNlhFXlSC0RTKHpCmr0r1iSMiVsPbg5a+pmAdJPsFvdvESzl439a1FLatMXcjAy/Hlk8ZgHieJhKEmCbq3x0iGMAeI7re4JNtC4jL7cy97YanDSYzyfeqVHgUbplG61yj6DO9bxsSApv7oBi0BrCs+Yed3S3BOHDQejwavwQq0eXOF/T7WUpcvaaPciis4WUJ6aU0leLfdzkOYs310ieY56AcJk7MTmdCX3xmTQwKSLrcWuZ+og9SzCBbUuyE4BNwixwrywZHCuvawEabX6bGcoTsl1k9s4f2UywUEDu03nht3C1s4IqdiFtN/eDakgtK6dI30kaJWR2kfQhXIdM9jS16rocwf4B9FsWmYYBaNKSbwq1UccbvfAgJfNKpdO7fbAkwnQlKaXvZoglpZSumTh5DgS8UNal2egd52q3DcJ3PO0nAOOUUT8qlz4qPSuekkRBfcWikLVP0RQBs1glatApPEpe9yaD6tiJMT1GDNtmfP99z9qwuMdaikExObKZc/zh5cuYzUidEURijtGNlAX+Aw+HST5ISUN29c4zzG9G1Gxdf7DUA/mmROtHW+MmiDKRvsMvSLCRyc0q1j2otaY7QEonKL2oS58fOFwkxpzXMPl5FKPjFIxymoKw13kTn1zE6Ne5qh0CAwEAAQ==-----END PUBLIC KEY-----`
@@ -10,6 +11,8 @@ const privateKey = pki.privateKeyFromPem(
 );
 
 const useRsa = () => {
+	const [time, setTime] = useState(null);
+
 	const test = () => {
 		axios.get('https://random-word-api.herokuapp.com/word').then((res) => {
 			// ENCRYPT String
@@ -28,12 +31,13 @@ const useRsa = () => {
 			);
 
 			const end = new Date();
+			setTime(end - start);
 			console.log(`Decryption time: ${end - start}`);
 			console.log(decrypted);
 		});
 	};
 
-	return { test };
+	return { test, time };
 };
 
 export default useRsa;

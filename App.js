@@ -4,12 +4,7 @@ import { useEffect } from 'react';
 import useRsa from './useRsa';
 
 export default function App() {
-	const { test } = useRsa();
-
-	// useEffect(() => {
-	// 	const unsubscribe = test();
-	// 	return unsubscribe;
-	// }, []);
+	const { test, time } = useRsa();
 
 	return (
 		<View style={styles.container}>
@@ -19,6 +14,7 @@ export default function App() {
 					test();
 				}}
 			/>
+			{time && <Text>{time}ms</Text>}
 			<StatusBar style='auto' />
 		</View>
 	);
